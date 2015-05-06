@@ -3,6 +3,8 @@ var Forecast = require('forecast.io');
 var util = require("util");
 var path = require("path");
 var bodyParser = require('body-parser');
+	var geocoder = require('geocoder');
+
 var app = express();
 
 // parse application/x-www-form-urlencoded
@@ -102,6 +104,12 @@ app.get('/alerts', function(request, response) {
 		response.send(JSON.stringify(data));
 	});
 });
+
+app.get('/location', function(request, response) {
+	geocoder.geocode(request.query.address, function ( err, data ) {
+	  response.send(JSON.stringify(data['results'][0]['geometry']['location']))
+	});
+})
 
 app.get('/', function(req, res) {
 	var index = path.resolve(__dirname + '/../index.html');
