@@ -9,22 +9,24 @@ Longitude
 <input type="text" ng-model="weather.longitude">
 <button type="submit" class="btn btn-primary" ng-click="weather.getCurrentWeatherByLatLon(weather.latitude, weather.longitude)">Get Current Weather
 </button>
-<button type="submit" class="btn btn-primary" ng-click="weather.getMinuteWeatherByLatLon(weather.latitude, weather.longitude)">Get Minutely Weather
-</button>
+<!-- <button type="submit" class="btn btn-primary" ng-click="weather.getMinuteWeatherByLatLon(weather.latitude, weather.longitude)">Get Minutely Weather
+</button> -->
 <button type="submit" class="btn btn-primary" ng-click="weather.getHourWeatherByLatLon(weather.latitude, weather.longitude)">Get Hourly Weather
 </button>
 <button type="submit" class="btn btn-primary" ng-click="weather.getDayWeatherByLatLon(weather.latitude, weather.longitude)">Get Daily Weather
 </button>
 </form>
 
-Data: {{weather.data}} <br/>
-Error: {{weather.error}}
+<!-- Data: {{weather.data}} <br/>
+ -->Error: {{weather.error}}
 
 <br/>
 <hr/>
-<currently></currently>
-
+<!-- <currently></currently>
+ -->
 <br/>
 <hr/>
 
-<hourly></hourly>
+<div class="hourly_container row" ng-repeat="hour in weather.data" ng-if="(($index % 3) == 0)">
+	<hourly></hourly>
+</div>

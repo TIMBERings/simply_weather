@@ -8,7 +8,7 @@ angular.module('myApp.weather', [
 				templateUrl: 'app/weather/weather.tmpl.html',
 				controller: 'WeatherController as weather'
 			});
-	}).controller('WeatherController', function($http, $window, $timeout) {
+	}).controller('WeatherController', function($http, $window, $timeout, $compile) {
 		var weather = this;
 		weather.zipcode = '';
 		weather.city = '';
@@ -97,44 +97,79 @@ angular.module('myApp.weather', [
 				'</div>'
 		}
 	})
-	.directive('hourly', function() {
+	.directive('hourly', function(timeFactory, $sce) {
 		return {
 			scope: true,
 			restrict: 'E',
-			template: '<div class="hourly_container row" ng-repeat="hour in weather.data" ng-if="(($index % 3) == 0)">' +
-				'<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">Time: <script>document.write(convertTime({{hour.time}}));</script></div>' +
-				'<div class="weather_block hourly col-xs-8 col-sm-8 col-md-8 col-lg-8">' +
-				'<canvas id="weather_icon_{{$index}}" width="128" height="128"></canvas><br />' +
-				'<span>Temp: {{hour.temperature}}  </span><br />' +
-				'<span> {{hour.summary}} </span><br />' +
-				'<span>Humidity: {{hour.humidity}} </span><br />' +
-				'<span>Pressure: {{hour.pressure}} </span><br />' +
-				'</div>' +
-				'</div>'
+			template: '<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4" ng-bind-html="convertTime">{{convertTime}}</div>' +
+					'<div class="weather_block hourly col-xs-8 col-sm-8 col-md-8 col-lg-8">' +
+						'<canvas id="weather_icon_{{$index}}" width="128" height="128"></canvas><br />' +
+						'<span>Temp: {{hour.temperature}}  </span><br />' +
+						'<span> {{hour.summary}} </span><br />' +
+						'<span>Humidity: {{hour.humidity}} </span><br />' +
+						'<span>Pressure: {{hour.pressure}} </span><br />' +
+					'</div>',
+			link: function(scope) {
+				console.log("In link");
+				console.log(scope)
+				console.log(scope.$parent.$index)
+				console.log(scope.$index)
+				scope.convertTime = $sce.trustAsHtml('Time: ' + timeFactory.convertTime(scope.weather.data[scope.$parent.$index].time));
+			}
 		}
+	})
+	.factory('timeFactory', function() {
+			timeFactory = {};
+
+			timeFactory.convertTime = function(time) {
+				console.log("in convert time.  Time: " + time);
+
+				var d = new Date(time * 1000);
+				var hours = d.getHours()
+				var minutes = d.getMinutes()
+
+				if (minutes < 10)
+					minutes = "0" + minutes
+
+				var suffix = "AM";
+				if (hours >= 12) {
+					suffix = "PM";
+					hours = hours - 12;
+				}
+				if (hours == 0) {
+					hours = 12;
+				}
+
+				var month = new Array();
+				month[0] = "January";
+				month[1] = "February";
+				month[2] = "March";
+				month[3] = "April";
+				month[4] = "May";
+				month[5] = "June";
+				month[6] = "July";
+				month[7] = "August";
+				month[8] = "September";
+				month[9] = "October";
+				month[10] = "November";
+				month[11] = "December";
+
+				var day = new Array();
+				day[0] = "Sunday";
+				day[1] = "Monday";
+				day[2] = "Tuesday";
+				day[3] = "Wednesday";
+				day[4] = "Thursday";
+				day[5] = "Friday";
+				day[6] = "Saturday";
+
+				return "<span>" + day[d.getDay()] + " " + month[d.getMonth()] + " " + d.getDate() + "</span> <br />" + "<span>" + hours + ":" + minutes + " " + suffix + "</span>";
+
+			}
+			return timeFactory;
+
+	
 	});
-
-function convertTime(time) {
-	console.log("in convert time");
-	var d = new Date(time * 1000);
-	var hours = d.getHours()
-	var minutes = d.getMinutes()
-
-	if (minutes < 10)
-		minutes = "0" + minutes
-
-	var suffix = "AM";
-	if (hours >= 12) {
-		suffix = "PM";
-		hours = hours - 12;
-	}
-	if (hours == 0) {
-		hours = 12;
-	}
-
-	return "<span>" + d.getMonth() + " " + d.getDay() + "</span> <br />" + "<span>" + hours + ":" + minutes + " " + suffix + "</span";
-}
-
 
 
 function handleError($window, status) {
