@@ -22,11 +22,13 @@ Longitude
 
 <br/>
 <hr/>
-<!-- <currently></currently>
- -->
-<br/>
-<hr/>
+<currently ng-if="weather.selection=='currently'"></currently>
 
-<div class="hourly_container row" ng-repeat="hour in weather.data" ng-if="(($index % 3) == 0)">
-	<hourly></hourly>
+
+<div class="hourly_container row" ng-repeat="hour in weather.data" ng-if="(($index % 3) == 0)" ng-if="weather.selection=='hourly'">
+	<hourly ng-if="weather.selection=='hourly'"></hourly>
+</div>
+
+<div clas="daily_container row" ng-repeat="day in weather.data" ng-if="weather.selection=='daily'">
+<daily ng-if="weather.selection=='daily'"></daily>
 </div>
