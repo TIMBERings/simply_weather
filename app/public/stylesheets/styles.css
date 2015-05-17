@@ -1,0 +1,81 @@
+html {
+    height: 100%
+}
+
+#address {
+    width: 100% !important;
+}
+.wrapper {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+.wrapper {
+    position: relative;
+}
+
+.wrapper::after {
+            content: "";
+
+    background-size: 100% 100%;
+    z-index: -1;
+    opacity: .5;
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    min-width: 100%;
+    min-height: 100%;
+
+}
+.wrapper.clear-night::after {
+    background-image: url("/public/images/backgrounds/clear-night.jpg");
+
+}
+
+.wrapper.cloudy::after {
+    background-image: url("/public/images/backgrounds/cloudy.jpg");
+}
+
+.wrapper.fog::after {
+    background-image: url("/public/images/backgrounds/fog.jpg");
+}
+
+.wrapper.partly-cloudy-day::after {
+    background-image: url("/public/images/backgrounds/partly-cloudy-day.jpg");
+}
+
+.wrapper.partly-cloudy-night::after {
+    background-image: url("/public/images/backgrounds/partly-cloudy-night.jpg");
+}
+
+.wrapper.rain::after {
+    background-image: url("/public/images/backgrounds/rain.jpg");
+}
+
+.wrapper.sleet::after {
+    background-image: url("/public/images/backgrounds/sleet.jpg");
+}
+
+.wrapper.snow::after {
+    background-image: url("/public/images/backgrounds/snow.jpg");
+}
+
+.wrapper.wind::after {
+    background-image: url("/public/images/backgrounds/wind.jpg");
+}
+
+.inner {
+    width: 60%;
+    margin: auto;
+    padding: 20px 10px;
+}
+
+.weather_block {
+    background-color: rgba(255,255,255,0.5);
+    padding: 20px;
+}
+
+.currently, .currently > *, .hourly, .hourly > *, .daily, .daily > *,  {
+    relative;
+}

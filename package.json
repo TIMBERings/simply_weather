@@ -1,0 +1,32 @@
+{
+  "name": "SimplyWeather",
+  "version": "1.0.0",
+  "description": "AngularJS practice on a weather app.",
+  "main": "index.html",
+  "dependencies": {
+    "forecast.io": "^0.0.9",
+    "geocoder": "^0.2.2",
+    "body-parser": "^1.12.3",
+    "express": "^4.12.3",
+    "skycons": "^1.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TIMBERings/weather.git"
+  },
+  "keywords": [
+    "Weather",
+    "Angular",
+    "AngularJS"
+  ],
+  "author": "Aaron Humerickhouse",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TIMBERings/weather/issues"
+  },
+  "homepage": "https://github.com/TIMBERings/weather"
+}
