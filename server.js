@@ -120,6 +120,6 @@ app.get('/index', function(req, res) {
 	res.redirect('/')
 });
 
-var server = app.listen(8080, function() {
-	console.log('Listening on port 8080');
+var server = app.listen(process.env.PORT || 5000, function() {
+	console.log('Listening on port: ' + process.env.PORT || 5000);
 });
