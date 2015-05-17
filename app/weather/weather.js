@@ -139,7 +139,7 @@ angular.module('myApp.weather', [
 	return {
 		scope: true,
 		restrict: 'E',
-		template: '<div class="weather_block"><div class="hourly">' +
+		template: '<div class="weather_block"><div class="hourly row">' +
 		'<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4" ng-bind-html="convertTime">{{convertTime}}</div>' +
 		'<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">' +
 		'<canvas id="weather_icon_{{$index}}" width="128" height="128"></canvas><br />' +
@@ -158,17 +158,18 @@ angular.module('myApp.weather', [
 		scope: true,
 		restrict: 'E',
 		template: '<div class="weather_block"><div class="daily row">'+
-		'<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4" ng-bind-html="convertedDay">{{convertedDay}}</div>' +
-		'<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">' +
+		'<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 vcenter" ng-bind-html="convertedDay">{{convertedDay}}</div>' +
+		'<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">' +
 		'<canvas id="weather_icon_{{$index}}" width="128" height="128"></canvas><br />' +
 		'<span>Low: {{day.temperatureMin}} - Feels like: {{day.apparentTemperatureMin}}</span><br />' +
 		'<span>High: {{day.temperatureMax}} - Feels like: {{day.apparentTemperatureMax}} </span><br />' +
 		'<span> {{day.summary}} </span><br />' +
 		'<span>Chance of Percipitation: {{day.precipProbability}} </span><br />' +
-		'<br />' +
+		'</div >' +
+		'<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">' +
 		'<span>Sunrise: {{sunrise}} </span><br />' +
 		'<span>Sunset: {{sunset}} </span><br />' +
-		'<div id="moon_{{$index}}"></div><br /><br /><br /><br /><br /><br /><br /><br /><br />' +
+		'<div id="moon_{{$index}}"></div>' +
 		'</div></div></div>',
 		link: function(scope) {
 			scope.sunrise = $sce.trustAsHtml(timeFactory.convertToHrMin(scope.day.sunriseTime));
@@ -232,7 +233,7 @@ angular.module('myApp.weather', [
 		day[5] = "Friday";
 		day[6] = "Saturday";
 
-		return day[d.getDay()] + " " + month[d.getMonth()] + " " + d.getDate()
+		return "<h2>" + day[d.getDay()] + "</h2><h3>" + month[d.getMonth()] + " " + d.getDate() + "</h3>";
 	};
 
 	timeFactory.convertToHrMin = function(time) {

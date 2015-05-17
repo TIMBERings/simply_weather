@@ -30,9 +30,9 @@ var options = {
 	forecast = new Forecast(options);
 
 
-app.use('/public', express.static(__dirname + '/public')); // set the static files location /public/img will be /img for users
-app.use('/app/weather', express.static(__dirname + '/weather')); // set the static files location /public/img will be /img for users
-app.use('/app', express.static(__dirname)); // set the static files location /public/img will be /img for users
+app.use('/public', express.static(__dirname + '/app/public')); // set the static files location /public/img will be /img for users
+app.use('/app/weather', express.static(__dirname + '/app/weather')); // set the static files location /public/img will be /img for users
+app.use('/app', express.static(__dirname + '/app')); // set the static files location /public/img will be /img for users
 
 
 app.get('/currently', function(request, response) {
@@ -112,7 +112,7 @@ app.get('/location', function(request, response) {
 })
 
 app.get('/', function(req, res) {
-	var index = path.resolve(__dirname + '/../index.html');
+	var index = path.resolve(__dirname + '/index.html');
 	res.sendFile(index);
 });
 
