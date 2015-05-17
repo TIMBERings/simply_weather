@@ -8,13 +8,37 @@ angular.module('myApp.weather', [
 		templateUrl: 'app/weather/weather.tmpl.html',
 		controller: 'WeatherController as weather'
 	});
-}).controller('WeatherController', function($http, $window, $timeout, $compile, locationService, moonFactory) {
+})
+.controller('WeatherController', function($http, $window, $timeout, $compile, locationService, moonFactory) {
 	var weather = this;
-	weather.zipcode = '';
-	weather.city = '';
-	weather.state = '';
+	weather.address = '';
 	weather.latitude = '';
 	weather.longitude = '';
+
+	weather.getCurrentWeatherByAddress = function(address) {
+		$http.get('/location?address=' + encodeURIComponent(address))
+			.success(function(data, status, headers, config) {
+				weather.getCurrentWeatherByLatLon(data.lat, data.lng)
+			})
+			.error(function(data, status, headers,config) {
+			});
+	};
+		weather.getHourWeatherByAddress = function(address) {
+		$http.get('/location?address=' + encodeURIComponent(address))
+			.success(function(data, status, headers, config) {
+				weather.getHourWeatherByLatLon(data.lat, data.lng)
+			})
+			.error(function(data, status, headers,config) {
+			});
+	};
+		weather.getDayWeatherByAddress = function(address) {
+		$http.get('/location?address=' + encodeURIComponent(address))
+			.success(function(data, status, headers, config) {
+				weather.getDayWeatherByLatLon(data.lat, data.lng)
+			})
+			.error(function(data, status, headers,config) {
+			});
+	};
 
 	weather.getCurrentWeatherByLatLon = function(latitude, longitude) {
 		weather.selection = 'currently';
@@ -96,13 +120,19 @@ angular.module('myApp.weather', [
 	return {
 		scope: true,
 		restrict: 'E',
-		template: '<div class="weather_block"><div class="currently">' +
-		'<canvas id="weather_icon" width="128" height="128"></canvas><br />' +
-		'<span>Temp: {{weather.data.currently.temperature}}  </span><br />' +
-		'<span> {{weather.data.currently.summary}} </span><br />' +
-		'<span>Humidity: {{weather.data.currently.humidity}} </span><br />' +
-		'<span>Pressure: {{weather.data.currently.pressure}} </span><br />' +
-		'</div></div>'
+		template: '<div class="weather_block">' +
+		'<div class="currently">' +
+		'<div class="block row">' + 
+		'<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">' +
+		'<canvas id="weather_icon" width="128" height="128" class="pull-right"></canvas>' + 
+		'</div> ' +
+				'<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">' +
+'<span>Temp: {{weather.data.temperature}}  </span><br />' +
+		'<span> {{weather.data.summary}} </span><br />' +
+		'<span>Humidity: {{weather.data.humidity}} </span><br />' +
+		'<span>Pressure: {{weather.data.pressure}} </span><br />' +
+		'</div> ' +
+		'</div></div></div>'
 	}
 })
 .directive('hourly', function(timeFactory, $sce) {
@@ -127,9 +157,9 @@ angular.module('myApp.weather', [
 	return {
 		scope: true,
 		restrict: 'E',
-		template: '<div class="weather_block"><div class="daily">'+
+		template: '<div class="weather_block"><div class="daily row">'+
 		'<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4" ng-bind-html="convertedDay">{{convertedDay}}</div>' +
-		'<div daily col-xs-8 col-sm-8 col-md-8 col-lg-8">' +
+		'<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">' +
 		'<canvas id="weather_icon_{{$index}}" width="128" height="128"></canvas><br />' +
 		'<span>Low: {{day.temperatureMin}} - Feels like: {{day.apparentTemperatureMin}}</span><br />' +
 		'<span>High: {{day.temperatureMax}} - Feels like: {{day.apparentTemperatureMax}} </span><br />' +
