@@ -18,101 +18,115 @@
     size, colour and appearance of the disc - see the comments on the 'defaultConfig' object for details.
     Copyright 2014 Rob Dawson
     http://codebox.org.uk/pages/planet-phase
-*/
+    */
 
-var drawPlanetPhase = (function(){
-    "use strict";
-    /*jslint browser: true, forin: true, white: true */
-    
-    function calcInner(outerDiameter, semiPhase){
-        var innerRadius,
+    var drawPlanetPhase = (function(){
+        "use strict";
+        /*jslint browser: true, forin: true, white: true */
+
+        function calcInner(outerDiameter, semiPhase){
+            var innerRadius,
             absPhase = Math.abs(semiPhase),
             n = ((1-absPhase) * outerDiameter/2) || 0.01;
 
-        innerRadius = n/2 + outerDiameter * outerDiameter/ (8 * n);
+            innerRadius = n/2 + outerDiameter * outerDiameter/ (8 * n);
 
-        return {
-            d : innerRadius * 2, 
-            o : semiPhase > 0 ? (outerDiameter/2 - n) : (-2 * innerRadius + outerDiameter/2 + n)
-        };
-    }
-
-    function setCss(el, props){
-        var p;
-        for (p in props){
-            el.style[p] = props[p];
+            return {
+                d : innerRadius * 2, 
+                o : semiPhase > 0 ? (outerDiameter/2 - n) : (-2 * innerRadius + outerDiameter/2 + n)
+            };
         }
-    }
-    function drawDiscs(outer, inner, blurSize){
-        var blurredDiameter, blurredOffset;
-        setCss(outer.box, {
-            'position': 'absolute',
-            'height':    outer.diameter + 'px',
-            'width':     outer.diameter + 'px',
-            'border':   '1px solid black',
-            'background-image': 'url("/public/images/moon.png")',
-            'background-size': outer.diameter + 'px ' + outer.diameter + 'px',
-            'borderRadius': (outer.diameter/2) + 'px',
-            'overflow': 'hidden'
-        });
-        
-        blurredDiameter = inner.diameter - blurSize;
-        blurredOffset = inner.offset + blurSize/2;
 
-        setCss(inner.box, {
-            'position': 'absolute',
-            'backgroundColor': inner.colour,
-            'borderRadius': (blurredDiameter/2) + 'px',
-            'height': blurredDiameter + 'px',
-            'width': blurredDiameter + 'px',
-            'left': blurredOffset + 'px',
-            'top': ((outer.diameter-blurredDiameter)/2) + 'px',
-            'boxShadow': '0px 0px ' + blurSize + 'px ' + blurSize + 'px ' + inner.colour,
-            'opacity' : inner.opacity
-        });    
-    }
-    function makeDiv(container){
-        var div = document.createElement('div');
-        container.appendChild(div);
-        return div;
-    }
-    function setPhase(outerBox, phase, isWaxing, config){
-        var innerBox = makeDiv(outerBox),
+        function setCss(el, props){
+            var p;
+            for (p in props){
+                el.style[p] = props[p];
+            }
+        }
+        function drawDiscs(outer, inner, blurSize, isWaxing){
+            var blurredDiameter, blurredOffset;
+
+            var outerCss = {};
+            outerCss['position'] = 'absolute'
+            outerCss['height'] = outer.diameter + 'px'
+            outerCss['width'] = outer.diameter + 'px'
+            outerCss['border'] ='1px solid black'
+            // if(isWaxing) {
+            //     outerCss['background-image'] = 'url("/public/images/moon.png")'
+            //     outerCss['background-size'] = outer.diameter + 'px ' + outer.diameter + 'px'
+            // } else {
+                outerCss['backgroundColor'] = outer.colour
+            //}
+            outerCss['borderRadius'] = (outer.diameter/2) + 'px'
+            outerCss['overflow'] = 'hidden'
+
+
+            setCss(outer.box, outerCss);
+
+            blurredDiameter = inner.diameter - blurSize;
+            blurredOffset = inner.offset + blurSize/2;
+
+            var innerCss = {};
+            innerCss['position'] = 'absolute'
+            // if(!isWaxing) {
+            //     innerCss['background-image'] = 'url("/public/images/moon.png")'
+            //     innerCss['background-size'] = inner.diameter + 'px ' + inner.diameter + 'px'
+            // } else {
+                innerCss['backgroundColor'] = inner.colour
+            //}
+            innerCss['borderRadius'] = (blurredDiameter/2) + 'px'
+            innerCss['height'] = blurredDiameter + 'px'
+            innerCss['width'] = blurredDiameter + 'px'
+            innerCss['left'] = blurredOffset + 'px'
+            innerCss['top'] = ((outer.diameter-blurredDiameter)/2) + 'px'
+            innerCss['boxShadow'] = '0px 0px ' + blurSize + 'px ' + blurSize + 'px ' + inner.colour
+            innerCss['opacity'] = inner.opacity
+
+
+            setCss(inner.box, innerCss);    
+        }
+        function makeDiv(container){
+            var div = document.createElement('div');
+            container.appendChild(div);
+            return div;
+        }
+        function setPhase(outerBox, phase, isWaxing, config){
+            var innerBox = makeDiv(outerBox),
             outerColour,
             innerColour,
             innerVals;
 
-        if (phase < 0.5){
-            outerColour = config.lightColour;
-            innerColour = config.shadowColour;
-            if (isWaxing){
-                phase *= -1;
+            if (phase < 0.5){
+                outerColour = config.lightColour;
+                innerColour = config.shadowColour;
+                if (isWaxing){
+                    phase *= -1;
+                }
+            } else {
+                outerColour = config.shadowColour;
+                innerColour = config.lightColour;
+                phase = 1 - phase;
+                if (!isWaxing){
+                    phase *= -1;
+                }
             }
-        } else {
-            outerColour = config.shadowColour;
-            innerColour = config.lightColour;
-            phase = 1 - phase;
-            if (!isWaxing){
-                phase *= -1;
-            }
+
+            innerVals = calcInner(config.diameter, phase * 2);
+
+            drawDiscs({
+                box : outerBox,
+                diameter : config.diameter,
+                colour: outerColour
+            }, {
+                box : innerBox,
+                diameter : innerVals.d,
+                colour: innerColour,
+                offset: innerVals.o,
+                opacity : 1 - config.earthshine
+            }, config.blur, isWaxing);
         }
 
-        innerVals = calcInner(config.diameter, phase * 2);
-
-        drawDiscs({
-            box : outerBox,
-            diameter : config.diameter,
-            colour: outerColour
-        }, {
-            box : innerBox,
-            diameter : innerVals.d,
-            colour: innerColour,
-            offset: innerVals.o,
-            opacity : 1 - config.earthshine
-        }, config.blur);
-    }
-
-    var defaultConfig = {
+        var defaultConfig = {
         shadowColour: 'black', // CSS background-colour value for the shaded part of the disc
         lightColour:  'white', // CSS background-colour value for the illuminated part of the disc
         diameter:      100,    // diameter of the moon/planets disc in pixels

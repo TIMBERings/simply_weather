@@ -34,12 +34,26 @@ app.use('/public', express.static(__dirname + '/app/public')); // set the static
 app.use('/app/weather', express.static(__dirname + '/app/weather')); // set the static files location /public/img will be /img for users
 app.use('/app', express.static(__dirname + '/app')); // set the static files location /public/img will be /img for users
 
+app.get('/all_weather', function(request, response) {
+	forecast.get(request.query.latitude, request.query.longitude, options, function(err, res, data) {
+		console.log('err: ' + err)
+		if (err) {
+			var status = data.split('<title>')[1].split(' ')[0]
+			console.log('Error in request. \nStatus: ' + status + '\nLatitude: ' + request.query.latitude + '\nLongitude: ' + request.query.longitude);
+			response.status(status).send();
+		} else {
+			response.send(JSON.stringify(data));
+		}
+	});
+});
 
 app.get('/currently', function(request, response) {
 	var options = {
 		exclude: 'minutely,hourly,daily,flags,alerts'
 	};
 	forecast.get(request.query.latitude, request.query.longitude, options, function(err, res, data) {
+				console.log('err: ' + err)
+
 		if (err) {
 			var status = data.split('<title>')[1].split(' ')[0]
 			console.log('Error in request. \nStatus: ' + status + '\nLatitude: ' + request.query.latitude + '\nLongitude: ' + request.query.longitude);

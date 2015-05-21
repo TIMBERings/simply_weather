@@ -17,27 +17,27 @@ angular.module('myApp.weather', [
 
 	weather.getCurrentWeatherByAddress = function(address) {
 		$http.get('/location?address=' + encodeURIComponent(address))
-			.success(function(data, status, headers, config) {
-				weather.getCurrentWeatherByLatLon(data.lat, data.lng)
-			})
-			.error(function(data, status, headers,config) {
-			});
+		.success(function(data, status, headers, config) {
+			weather.data = weather.getCurrentWeatherByLatLon(data.lat, data.lng)
+		})
+		.error(function(data, status, headers,config) {
+		});
 	};
-		weather.getHourWeatherByAddress = function(address) {
+	weather.getHourWeatherByAddress = function(address) {
 		$http.get('/location?address=' + encodeURIComponent(address))
-			.success(function(data, status, headers, config) {
-				weather.getHourWeatherByLatLon(data.lat, data.lng)
-			})
-			.error(function(data, status, headers,config) {
-			});
+		.success(function(data, status, headers, config) {
+			weather.getHourWeatherByLatLon(data.lat, data.lng)
+		})
+		.error(function(data, status, headers,config) {
+		});
 	};
-		weather.getDayWeatherByAddress = function(address) {
+	weather.getDayWeatherByAddress = function(address) {
 		$http.get('/location?address=' + encodeURIComponent(address))
-			.success(function(data, status, headers, config) {
-				weather.getDayWeatherByLatLon(data.lat, data.lng)
-			})
-			.error(function(data, status, headers,config) {
-			});
+		.success(function(data, status, headers, config) {
+			weather.getDayWeatherByLatLon(data.lat, data.lng)
+		})
+		.error(function(data, status, headers,config) {
+		});
 	};
 
 	weather.getCurrentWeatherByLatLon = function(latitude, longitude) {
@@ -53,6 +53,8 @@ angular.module('myApp.weather', [
 					skycons.add("weather_icon", weather.data.icon);
 					skycons.play();
 					// when the response is available
+
+					return weather.data;
 				})
 		.error(function(data, status, headers, config) {
 			weather.error = status;
@@ -77,7 +79,7 @@ angular.module('myApp.weather', [
 							skycons.add("weather_icon_" + i, weather.data[i].icon);
 						}
 						skycons.play();
-					}, 500);
+					}, 50);
 				})
 		.error(function(data, status, headers, config) {
 			weather.error = status;
@@ -99,15 +101,10 @@ angular.module('myApp.weather', [
 						for (var i = 0; i < weather.data.length; i++) {
 							skycons.add("weather_icon_" + i, weather.data[i].icon);
 							moonFactory.moon(weather.data[i].moonPhase, i)
-							// percentage = parseFloat(weather.data[i].moonPhase);
-							// var waxing = percentage >= 0.5;
-							// percentage = (percentage * 2) >= 1 ? (percentage * 2) - 1 : percentage * 2;
-							// drawPlanetPhase(document.getElementById('moon_' + i), percentage, waxing);
-
 						}
 
 						skycons.play();
-					}, 500);
+					}, 50);
 				})
 		.error(function(data, status, headers, config) {
 			weather.error = status;
@@ -124,13 +121,13 @@ angular.module('myApp.weather', [
 		'<div class="currently">' +
 		'<div class="block row">' + 
 		'<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">' +
-		'<canvas id="weather_icon" width="128" height="128" class="pull-right"></canvas>' + 
+		'<canvas id="weather_icon" width="128" height="128" class="center-block"></canvas>' + 
 		'</div> ' +
-				'<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">' +
-'<span>Temp: {{weather.data.temperature}}  </span><br />' +
+		'<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 currently-info">' +
+		'<span>Temp: {{weather.data.temperature}}  </span><br />' +
 		'<span> {{weather.data.summary}} </span><br />' +
 		'<span>Humidity: {{weather.data.humidity}} </span><br />' +
-		'<span>Pressure: {{weather.data.pressure}} </span><br />' +
+		'<span>Pressure: {{weather.data.pressure}} </span>' +
 		'</div> ' +
 		'</div></div></div>'
 	}
@@ -153,12 +150,12 @@ angular.module('myApp.weather', [
 		}
 	}
 })
-.directive('daily', function(timeFactory, moonFactory, $sce) {
+.directive('daily', function(timeFactory, $sce) {
 	return {
 		scope: true,
 		restrict: 'E',
 		template: '<div class="weather_block"><div class="daily row">'+
-		'<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 vcenter" ng-bind-html="convertedDay">{{convertedDay}}</div>' +
+		'<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 vcenter" ng-bind-html="convertedDay">{{convertedDay}}</div>' +
 		'<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">' +
 		'<canvas id="weather_icon_{{$index}}" width="128" height="128"></canvas><br />' +
 		'<span>Low: {{day.temperatureMin}} - Feels like: {{day.apparentTemperatureMin}}</span><br />' +
@@ -166,7 +163,7 @@ angular.module('myApp.weather', [
 		'<span> {{day.summary}} </span><br />' +
 		'<span>Chance of Percipitation: {{day.precipProbability}} </span><br />' +
 		'</div >' +
-		'<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">' +
+		'<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">' +
 		'<span>Sunrise: {{sunrise}} </span><br />' +
 		'<span>Sunset: {{sunset}} </span><br />' +
 		'<div id="moon_{{$index}}"></div>' +
@@ -175,7 +172,6 @@ angular.module('myApp.weather', [
 			scope.sunrise = $sce.trustAsHtml(timeFactory.convertToHrMin(scope.day.sunriseTime));
 			scope.sunset = $sce.trustAsHtml(timeFactory.convertToHrMin(scope.day.sunsetTime));
 			scope.convertedDay = $sce.trustAsHtml(timeFactory.convertDay(scope.day.sunsetTime));
-			//scope.moon = moonFactory.moon(scope.day.moonPhase, scope.$index);
 		}
 	}
 
@@ -189,49 +185,29 @@ angular.module('myApp.weather', [
 		var percentage = initial_percentage * 2;
 		if(percentage > 1) {
 			percentage = 2 - percentage;
-		}
 
+		}
 		var waxing = true;
 
 		if(initial_percentage >= 0.5) {
 			waxing = false;
 		}
+		console.log('Initial: ' + initial_percentage + ' -- after: ' + percentage + ' -- waxing: ' + waxing);
 
-		console.log('drawPlanetPhase(document.getElementById("moon_' + index + '"), ' + percentage + ', ' + waxing + ');');
-		drawPlanetPhase(document.getElementById("moon_" + index), percentage, initial_percentage <= 0.5 );
+		drawPlanetPhase(document.getElementById("moon_" + index), percentage, waxing );
 	};
 
 	return moonFactory;
 
 })
-.factory('timeFactory', function() {
+.factory('timeFactory', function(dateService) {
 	timeFactory = {};
 
 	timeFactory.convertDay = function(time) {
 		var d = new Date(time * 1000);
 
-		var month = new Array();
-		month[0] = "January";
-		month[1] = "February";
-		month[2] = "March";
-		month[3] = "April";
-		month[4] = "May";
-		month[5] = "June";
-		month[6] = "July";
-		month[7] = "August";
-		month[8] = "September";
-		month[9] = "October";
-		month[10] = "November";
-		month[11] = "December";
-
-		var day = new Array();
-		day[0] = "Sunday";
-		day[1] = "Monday";
-		day[2] = "Tuesday";
-		day[3] = "Wednesday";
-		day[4] = "Thursday";
-		day[5] = "Friday";
-		day[6] = "Saturday";
+		var month = dateService.getMonths();
+		var day = dateService.getDays();
 
 		return "<h2>" + day[d.getDay()] + "</h2><h3>" + month[d.getMonth()] + " " + d.getDate() + "</h3>";
 	};
@@ -273,7 +249,18 @@ angular.module('myApp.weather', [
 			hours = 12;
 		}
 
-		var month = new Array();
+		var month = dateService.getMonths();
+		var day = dateService.getDays();
+
+		return "<span>" + day[d.getDay()] + " " + month[d.getMonth()] + " " + d.getDate() + "</span> <br />" + "<span>" + hours + ":" + minutes + " " + suffix + "</span>";
+	}
+	return timeFactory;
+})
+.service('dateService', function() {
+	var dateService = this;
+	dateService.getMonths = function() {
+		var month = [];
+		month = new Array();
 		month[0] = "January";
 		month[1] = "February";
 		month[2] = "March";
@@ -286,8 +273,11 @@ angular.module('myApp.weather', [
 		month[9] = "October";
 		month[10] = "November";
 		month[11] = "December";
+		return month;
+	}
 
-		var day = new Array();
+	dateService.getDays = function() {
+		day = new Array();
 		day[0] = "Sunday";
 		day[1] = "Monday";
 		day[2] = "Tuesday";
@@ -296,10 +286,8 @@ angular.module('myApp.weather', [
 		day[5] = "Friday";
 		day[6] = "Saturday";
 
-		return "<span>" + day[d.getDay()] + " " + month[d.getMonth()] + " " + d.getDate() + "</span> <br />" + "<span>" + hours + ":" + minutes + " " + suffix + "</span>";
-
+		return day
 	}
-	return timeFactory;
 })
 .service('locationService', function($http) {
 	var locationService = {}
@@ -309,36 +297,17 @@ angular.module('myApp.weather', [
 			return data;
 		})
 		.error(function(data, status, headers, config) {
-
 		})
-
 	}
 	return locationService
-
 });
-
 
 function handleError($window, status) {
 	if (status == 400) {
-		console.log('in 400');
-		//location.href = '/public/400.html'
 		$window.location.href = '/public/400.html';
 		$location.path('/public/400.html');
 	}
 }
-
-// function createCurrentlyData(data) {
-// 	var image = '';
-
-// 	<div class="weather_block currently">
-// 		<canvas id="weather_icon" width="128" height="128"></canvas>
-// 		<span>Temp: {{data.currently.temperature}}  </span>
-// 		<span> {{data.currently.summary}} </span>
-// 		<span>Humidity: {{data.currently.humidity}} </span>
-// 		<span>Pressure: {{data.currently.pressure}} </span>
-// 	</div>
-
-// }
 
 function displayBackground(icon) {
 	$('div.wrapper').removeClass('clear-day clear-night rain snow sleet wind fog cloudy partly-cloudy-day partly-cloudy-night');
