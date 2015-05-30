@@ -28,10 +28,10 @@
 <currently ng-if="weather.selection=='currently'"></currently>
 
 
-<div class="hourly_container row" ng-repeat="hour in weather.data" ng-if="(($index % 3) == 0)" ng-if="weather.selection=='hourly'">
+<div class="hourly_container row" ng-repeat="hour in weather.data.hourly.data	" ng-if="(($index % 3) == 0)" ng-if="weather.selection=='hourly'">
 	<hourly ng-if="weather.selection=='hourly'"></hourly>
 </div>
 
-<div clas="daily_container row" ng-repeat="day in weather.data" ng-if="weather.selection=='daily'">
+<div clas="daily_container row" ng-repeat="day in weather.data.daily.data" ng-if="weather.selection=='daily'">
 	<daily ng-if="weather.selection=='daily'"></daily>
 </div>

@@ -28,9 +28,11 @@ html {
     min-height: 100%;
 
 }
+.wrapper.clear-day::after {
+    background-image: url("/public/images/backgrounds/clear-day.jpg");
+}
 .wrapper.clear-night::after {
     background-image: url("/public/images/backgrounds/clear-night.jpg");
-
 }
 
 .wrapper.cloudy::after {

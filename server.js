@@ -3,7 +3,7 @@ var Forecast = require('forecast.io');
 var util = require("util");
 var path = require("path");
 var bodyParser = require('body-parser');
-	var geocoder = require('geocoder');
+var geocoder = require('geocoder');
 
 var app = express();
 
@@ -36,64 +36,15 @@ app.use('/app', express.static(__dirname + '/app')); // set the static files loc
 
 app.get('/all_weather', function(request, response) {
 	forecast.get(request.query.latitude, request.query.longitude, options, function(err, res, data) {
-		console.log('err: ' + err)
 		if (err) {
-			var status = data.split('<title>')[1].split(' ')[0]
-			console.log('Error in request. \nStatus: ' + status + '\nLatitude: ' + request.query.latitude + '\nLongitude: ' + request.query.longitude);
+					console.log('all_weather err: ' + err)
+
+			// var status = data.split('<title>')[1].split(' ')[0]
+			// console.log('Error in request. \nStatus: ' + status + '\nLatitude: ' + request.query.latitude + '\nLongitude: ' + request.query.longitude);
 			response.status(status).send();
 		} else {
 			response.send(JSON.stringify(data));
 		}
-	});
-});
-
-app.get('/currently', function(request, response) {
-	var options = {
-		exclude: 'minutely,hourly,daily,flags,alerts'
-	};
-	forecast.get(request.query.latitude, request.query.longitude, options, function(err, res, data) {
-				console.log('err: ' + err)
-
-		if (err) {
-			var status = data.split('<title>')[1].split(' ')[0]
-			console.log('Error in request. \nStatus: ' + status + '\nLatitude: ' + request.query.latitude + '\nLongitude: ' + request.query.longitude);
-			response.status(status).send();
-		} else {
-			response.send(JSON.stringify(data));
-		}
-	});
-});
-
-app.get('/minutely', function(request, response) {
-
-	var options = {
-		exclude: 'currently,hourly,daily,flags,alerts'
-	};
-	forecast.get(request.query.latitude, request.query.longitude, options, function(err, res, data) {
-		if (err) throw err;
-		response.send(JSON.stringify(data));
-	});
-});
-
-app.get('/hourly', function(request, response) {
-
-	var options = {
-		exclude: 'currently,minutely,daily,flags,alerts'
-	};
-	forecast.get(request.query.latitude, request.query.longitude, options, function(err, res, data) {
-		if (err) throw err;
-		response.send(JSON.stringify(data));
-	});
-});
-
-app.get('/daily', function(request, response) {
-
-	var options = {
-		exclude: 'currently,minutely,hourly,flags,alerts'
-	};
-	forecast.get(request.query.latitude, request.query.longitude, options, function(err, res, data) {
-		if (err) throw err;
-		response.send(JSON.stringify(data));
 	});
 });
 
@@ -120,8 +71,12 @@ app.get('/alerts', function(request, response) {
 });
 
 app.get('/location', function(request, response) {
-	geocoder.geocode(request.query.address, function ( err, data ) {
-	  response.send(JSON.stringify(data['results'][0]['geometry']['location']))
+	geocoder.geocode(request.query.address, function(err, data) {
+		if (err) {
+			console.log('location err: ' + err)
+		} else {
+			response.send(JSON.stringify(data['results'][0]['geometry']['location']))
+		}
 	});
 })
 
