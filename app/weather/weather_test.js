@@ -2,57 +2,75 @@ describe('Weather Module ', function() {
 
 	beforeEach(module('myApp.weather'));
 
-	var weatherControler, scope;
+	var weather, scope;
 
 	beforeEach(inject(function($rootScope, $controller) {
 		scope = $rootScope.$new();
-		weatherController = $controller('WeatherController', {
+		weather = $controller('WeatherController', {
 			$scope: scope
 		});
 	}));
 
 	describe('getCurrentWeatherByAddress', function() {
 		beforeEach(function() {
-			weatherController.getCurrentWeatherByAddress('55423');
+			weather.address = '55423';
+			weather.getCurrentWeatherByAddress('55423');
 		});
 
+		afterEach(function() {
+			weather.lastAddress = '';
+		})
+
 		it('should set selection to currently', function() {
-			expect(weatherController.selection).toBe('currently');
+			expect(weather.selection).toBe('currently');
 		});
 
 		it('should have currently in weather.data', function() {
 			setTimeout(function() {
-				expect('currently' in weatherController.data).toBe(true);
+				expect('currently' in weather.data).toBe(true);
 			}, 700);
-		})
+		});
 	});
 
-	// describe('getHourWeatherByAddress', function() {
-	// 	beforeEach(function() {
-	// 		weatherController.getHourWeatherByAddress('55423');
-	// 	});
+	describe('getHourWeatherByAddress', function() {
+		beforeEach(function() {
+			weather.address = '55423';
+			weather.getHourWeatherByAddress('55423');
+		});
 
-	// 	it('should set selection to hourly', function() {
-	// 		expect(weatherController.selection).toBe('hourly');
-	// 	});
+		afterEach(function() {
+			weather.lastAddress = '';
+		});
 
-	// 	it('should have hourly in weather.data', function() {
-	// 			expect('hourly' in weatherController.data).toBe(true);
-	// 	})
-	// });
+		it('should set selection to hourly', function() {
+			expect(weather.selection).toBe('hourly');
+		});
 
-	// describe('getDayWeatherByAddress', function() {
-	// 	beforeEach(function() {
-	// 		weatherController.getDayWeatherByAddress('55423');
-	// 	});
+		it('should have hourly in weather.data', function() {
+			setTimeout(function() {
+				expect('hourly' in weather.data).toBe(true);
+			}, 700);
+		});
+	});
 
-	// 	it('should set selection to daily', function() {
-	// 		expect(weatherController.selection).toBe('daily');
-	// 	});
+	describe('getDayWeatherByAddress', function() {
+		beforeEach(function() {
+			weather.address = '55423';
+			weather.getDayWeatherByAddress('55423');
+		});
 
-	// 	it('should have daily in weather.data', function() {
-	// 		expect('daily' in weatherController.data).toBe(true);
-	// 	})
-	// });
+		afterEach(function() {
+			weather.lastAddress = '';
+		});
 
+		it('should set selection to daily', function() {
+			expect(weather.selection).toBe('daily');
+		});
+
+		it('should have daily in weather.data', function() {
+			setTimeout(function() {
+				expect('daily' in weather.data).toBe(true);
+			}, 700);
+		});
+	});
 });
