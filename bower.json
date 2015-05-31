@@ -1,0 +1,32 @@
+{
+  "name": "Simply-Weather",
+  "version": "0.0.0",
+  "homepage": "simply-weather.heroku.com",
+  "authors": [
+    "Aaron Humerickhouse"
+  ],
+  "description": "Trying to learn angular.",
+  "main": "app.js",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "weather"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.0",
+    "bootstrap": "~3.3.4",
+    "angular-ui-router": "~0.2.15"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.4.0"
+  }
+}
