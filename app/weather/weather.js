@@ -63,35 +63,25 @@ angular.module('myApp.weather', [
 .service('addressService', function($http, errorFactory) {
 	var addressService = this;
 	addressService.getLatitudeLongitude = function(address) {
-		console.log('in addressService.getLatitudeLongitude')
-
 		return $http.get('/location?address=' + encodeURIComponent(address))
 			.success(function(data, status, headers, config) {
-				console.log('success')
 				return data;
 			})
 			.error(function(data, status, headers, config) {
-				console.log('error')
-				console.log('addressService data: ' + data)
 				errorFactory.handleError(status);
 			});
 	};
-	addressService.isNewAddress = function(address1, address2) {
-		return address1 != address2;
-	};
 })
 
-.service('weatherService', function($http, addressService, errorFactory) {
+.service('weatherService', function($http, addressService, addressFactory, errorFactory) {
 		var weatherService = this;
 
 		weatherService.getWeather = function(latitude, longitude) {
-			console.log('get weather')
 			return $http.get('/all_weather?latitude=' + latitude + '&longitude=' + longitude)
 				.success(function(data, status, headers, config) {
 					return data;
 				})
 				.error(function(data, status, headers, config) {
-					console.log('getWeather data: ' + data)
 					errorFactory.handleError(status);
 				});
 		};
@@ -100,17 +90,14 @@ angular.module('myApp.weather', [
 			var lat_lon;
 			return addressService.getLatitudeLongitude(address).then(function(result) {
 				lat_lon = result.data;
-				console.log(lat_lon)
-
 				return weatherService.getWeather(lat_lon.lat, lat_lon.lng).then(function(result) {
-					console.log(result.data.currently);
 					return result.data;
 				});
 			});
 		};
 
 		weatherService.needNewWeather = function(data, address1, address2) {
-			return data == {} || addressService.isNewAddress(address1, address2);
+			return data == {} || addressFactory.isNewAddress(address1, address2);
 		};
 	})
 	.directive('currently', function() {
@@ -176,7 +163,15 @@ angular.module('myApp.weather', [
 				scope.convertedDay = $sce.trustAsHtml(timeFactory.convertDay(scope.day.sunsetTime));
 			}
 		}
+	})
+	.factory('addressFactory', function() {
+		addressFactory = {};
 
+		addressFactory.isNewAddress = function(address1, address2) {
+			return address1 != address2;
+		};
+
+		return addressFactory;
 	})
 	.factory('moonFactory', function() {
 		moonFactory = {};
@@ -194,7 +189,6 @@ angular.module('myApp.weather', [
 			if (initial_percentage >= 0.5) {
 				waxing = false;
 			}
-			console.log('Initial: ' + initial_percentage + ' -- after: ' + percentage + ' -- waxing: ' + waxing);
 
 			drawPlanetPhase(document.getElementById("moon_" + index), percentage, waxing);
 		};
@@ -221,13 +215,11 @@ angular.module('myApp.weather', [
 			$timeout(function() {
 				displayBackground(data[0].icon);
 
-				console.log(data.length);
 				var skycons = new Skycons({
 					"color": "blue"
 				});
 
 				for (var i = 0; i < data.length; i = i + 3) {
-					console.log(data[i].icon);
 					skycons.add("weather_icon_" + i, data[i].icon);
 				}
 				skycons.play();
@@ -349,35 +341,27 @@ angular.module('myApp.weather', [
 		locationService.getLocation = function(address) {
 			$http.get('/location?address=' + address)
 				.success(function(data, status) {
-					console.log("locationService success data: " + data)
-					console.log("locationService success status: " + status)
 					return data;
 				})
 				.error(function(data, status) {
-					console.log("locationService error data: " + data)
-					console.log("locationService error status: " + status)
 					errorFactory.handleError(status);
 				})
 		}
 		return locationService
 	})
-.factory('errorFactory', function($window) {
-	var errorFactory = {};
-	errorFactory.handleError = function(status) {
-		console.log('errorFactory status: ' + status);
-		if (status == 400) {
-			console.log('should redirect to 400')
-			$window.location.href = '/public/400.html';
-			$location.path('/public/400.html');
-		} else if (status == 404) {
-						console.log('should redirect to 404')
-
-			$window.location.href = '/public/404.html';
-			$location.path('/public/404.html');
+	.factory('errorFactory', function($window) {
+		var errorFactory = {};
+		errorFactory.handleError = function(status) {
+			if (status == 400) {
+				$window.location.href = '/public/400.html';
+				$location.path('/public/400.html');
+			} else if (status == 404) {
+				$window.location.href = '/public/404.html';
+				$location.path('/public/404.html');
+			}
 		}
-	}
-	return errorFactory;
-});
+		return errorFactory;
+	});
 
 function displayBackground(icon) {
 	$('div.wrapper').removeClass('clear-day clear-night rain snow sleet wind fog cloudy partly-cloudy-day partly-cloudy-night');
