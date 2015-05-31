@@ -1,10 +1,16 @@
 language: node_js
 node_js:
-  - "0.10"
+- '0.10'
 script: node_modules/karma/bin/karma start karma.conf.js --single-run
 before_install:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
 before_script:
-  - npm install
-  - node server.js
+- npm install
+- node server.js
+env:
+  global:
+  #Geocoding
+  - secure: qcf+I6yEW9j72nr+Grr9Ft8ViThpATIlT/7zayckLQwrMhCE+yYA3yoDuvszkZ4Y1nYATz7o/3Hd6NjftV9vH5VRYlX3YqT3qkugGNpLAGEb9pMaE5eH0/uG6baCwyp4VxmuX8yrkQNBXfChCZoqJ7/hsShBTBgtuYSb7yjeNYo+BuP8qKjA/9dUJbGa//psyIcXwTFXopu/Y0/ZHuASUnSsAxUZosaRZaea+xmC+/6ePMUy1iHKTyKXGNInheHqn7+Y/BFiCj7D4tBRRmNoLqIA8IMEHqPjJslWgY+tarB9ds6zDTnr+jQ/zh006mNtBVSAeTo8v5jEx9IdNqBdo5AzOs5aSJKAK4X/UIsOx4bfrKTqAoTSIf8oQodYX6A6W/p3xXEtSqntg6G4o4CHYu6feEROoOWvaohevs+NXYBOm8jmNjJA6vNczZ2Ne111uP12wJqH9yhgeV3iRIBgZodnQI0+9An4l9izLdOV/n24szJ1QRKBtA+snKhzuzRXs0WYY8UBcDGpIfhV/KrEq+nGdJVKZa+eeeNwVGR0VCMDSCKAQbSFpGk7NQMw30sTQPPRdI0HmDO8LXt/BbQRqhg0zuI3T2qay8Rd/kzxSys4dvOjgL/9JTbA2U/f6/H7zrLeo32f8aUj8h3uV4oAmz09WQnZ1OKLQ8PU8k94Hxc=
+  #Forecast
+  - secure: bYvi+rxdAk/dqfXnJr9m3Sss/A0JWdmtKYcahLNKSdYqhzLC+v8/PwIFzWAFz5h8LXFSMTi6/HeXmz3qu/3eRsVZvyto8h6KyYVYxIJlHQSbiXp45WFPmdfhXaFkvAu1V+W8Kj/n00KlF8te0twxdmH4KQcLVCVwYnS5lsS4t5wCFKXGdfNNREcN34WtBRvQQmhUQH1R4AbRBW2xFbbJxLcPBtFwFFni7qFvd5IeRiiD9/YzmuH+Xn9dwTsRmHxdZEI1Cratkj1T3WAvq+En0V8b6k0mKOHIY0mO9LTYH7wgqcZFuEMDuV1UpcwyxYEOPRne114zZvKqM6SPGW2O1BLjJyhiPbFc3bRCsIabBO8YvTJV1tIatZXCdGXL6zug57VUB//NMqBB3kx75Uy1TOcHliN1RFBKhMOFYC19UN+INBc91ooEpyebgjePzK0B8RkVkpR10M7vi6djQ90SEXM6zhevZqEMnIsLIhS7r0n+/H+Yr7Fd3ZLudEYIWOqbbY9nlh5Wccc85ZFmpRfU65vnQSYshZMEVKfqCVO/NJRFci1M35uarEBEdA94Ys7UQeumhpNhhAXzwhrZVGYSZacCPlPx66Otxgppu7+pYiUzaCKYdbyPl1CHPEyX5EsXaHVTPZu++wQGqwonnOzcyC3diy4YhuhCtGe4abdtiDw=
