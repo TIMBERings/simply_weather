@@ -7,6 +7,7 @@ before_script:
 - sh -e /etc/init.d/xvfb start
 - sleep 3 #Give time to start up xvfb
 - npm install
+- bower install
 env:
   global:
   #Geocoding
