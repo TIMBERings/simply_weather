@@ -16,7 +16,6 @@ angular.module('myApp.weather', [
 		weather.data = {};
 
 		weather.getCurrentWeatherByAddress = function(address) {
-			console.log('getCurrentWeatherByAddress');
 			weather.selection = 'currently';
 			if (weatherService.needNewWeather(weather.data, weather.address, weather.lastAddress)) {
 				return weatherService.getWeatherByAddress(address).then(function(result) {
@@ -37,7 +36,7 @@ angular.module('myApp.weather', [
 					weather.lastAddress = address;
 					return
 				}).then(function() {
-									weatherFactory.displayHourly(weather.data.hourly.data, 50);
+					weatherFactory.displayHourly(weather.data.hourly.data, 50);
 				});
 			} else {
 				weatherFactory.displayHourly(weather.data.hourly.data, 50);
@@ -61,7 +60,7 @@ angular.module('myApp.weather', [
 		};
 	})
 
-.service('addressService', function($http) {
+.service('addressService', function($http, errorFactory) {
 	var addressService = this;
 	addressService.getLatitudeLongitude = function(address) {
 		console.log('in addressService.getLatitudeLongitude')
@@ -69,11 +68,12 @@ angular.module('myApp.weather', [
 		return $http.get('/location?address=' + encodeURIComponent(address))
 			.success(function(data, status, headers, config) {
 				console.log('success')
-				console.log(data);
 				return data;
 			})
 			.error(function(data, status, headers, config) {
 				console.log('error')
+				console.log('addressService data: ' + data)
+				errorFactory.handleError(status);
 			});
 	};
 	addressService.isNewAddress = function(address1, address2) {
@@ -81,7 +81,7 @@ angular.module('myApp.weather', [
 	};
 })
 
-.service('weatherService', function($http, addressService) {
+.service('weatherService', function($http, addressService, errorFactory) {
 		var weatherService = this;
 
 		weatherService.getWeather = function(latitude, longitude) {
@@ -91,7 +91,8 @@ angular.module('myApp.weather', [
 					return data;
 				})
 				.error(function(data, status, headers, config) {
-					return null;
+					console.log('getWeather data: ' + data)
+					errorFactory.handleError(status);
 				});
 		};
 
@@ -343,24 +344,40 @@ angular.module('myApp.weather', [
 			return day
 		};
 	})
-	.service('locationService', function($http) {
+	.service('locationService', function($http, errorFactory) {
 		var locationService = {}
 		locationService.getLocation = function(address) {
 			$http.get('/location?address=' + address)
-				.success(function(data, status, headers, config) {
+				.success(function(data, status) {
+					console.log("locationService success data: " + data)
+					console.log("locationService success status: " + status)
 					return data;
 				})
-				.error(function(data, status, headers, config) {})
+				.error(function(data, status) {
+					console.log("locationService error data: " + data)
+					console.log("locationService error status: " + status)
+					errorFactory.handleError(status);
+				})
 		}
 		return locationService
-	});
+	})
+.factory('errorFactory', function($window) {
+	var errorFactory = {};
+	errorFactory.handleError = function(status) {
+		console.log('errorFactory status: ' + status);
+		if (status == 400) {
+			console.log('should redirect to 400')
+			$window.location.href = '/public/400.html';
+			$location.path('/public/400.html');
+		} else if (status == 404) {
+						console.log('should redirect to 404')
 
-function handleError($window, status) {
-	if (status == 400) {
-		$window.location.href = '/public/400.html';
-		$location.path('/public/400.html');
+			$window.location.href = '/public/404.html';
+			$location.path('/public/404.html');
+		}
 	}
-}
+	return errorFactory;
+});
 
 function displayBackground(icon) {
 	$('div.wrapper').removeClass('clear-day clear-night rain snow sleet wind fog cloudy partly-cloudy-day partly-cloudy-night');

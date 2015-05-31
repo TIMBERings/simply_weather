@@ -1,8 +1,10 @@
 <html>
-	<head>
-	</head>
-	<body>
-		<h1>400 Bad Request</h1>
-		<img src="images/400/400-1.jpg"/>
-	</body>
+<head>
+	<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+</head>
+<body>
+	<h1>400 Bad Request</h1>
+	<img id="400" src="images/400/400-1.jpg"/>
+	<script>$('#400').attr('src','images/400/400-'+ Math.floor((Math.random() * 3) + 1) + '.jpg')</script>
+</body>
 </html>

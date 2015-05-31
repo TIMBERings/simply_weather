@@ -8,9 +8,19 @@
     "express": "^4.12.3",
     "forecast.io": "^0.0.9",
     "geocoder": "^0.2.2",
+    "karma": "^0.12.35",
     "skycons": "^1.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jasmine-core": "^2.3.4",
+    "kama": "^0.2.1",
+    "karma": "^0.12.35",
+    "karma-chrome-launcher": "^0.1.12",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-jasmine": "^0.3.5",
+    "karma-phantomjs-launcher": "^0.2.0",
+    "phantomjs": "^1.9.17"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
