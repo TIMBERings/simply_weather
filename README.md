@@ -1,0 +1,1 @@
+![Travis](https://travis-ci.org/TIMBERings/simply_weather.svg?branch=master)
